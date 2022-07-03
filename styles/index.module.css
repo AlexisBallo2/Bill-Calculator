@@ -1,0 +1,8 @@
+.holder {
+    display: inline-block
+}
+
+.buttons {
+    width: 40px;
+    background-color: red;
+}
