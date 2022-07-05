@@ -183,7 +183,7 @@ list_of_people = {
         'victoria': 13,
         'penny': 13,
         'george': 2,
-        "jacob": 9,
+        "jacob": 9, 
         'rory': 11,
         'greg': 1,
         'tracey': 1,
