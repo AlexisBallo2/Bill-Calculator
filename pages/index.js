@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Group from "./components/Group";
 import styles from "../styles/index.module.css";
+import Swal from "sweetalert2";
 
 var groupsCounter = 3;
 
@@ -9,8 +10,23 @@ export default function Home() {
   const [costData, setCostData] = useState([]);
   const [isLoading, setLoading] = useState(false);
   const [fullData, setfullData] = useState([]);
-
+  const [popupShow, setpopupShow] = useState(true);
   var [groups, setGroups] = useState([{ id: 0 }, { id: 1 }]);
+
+  if (popupShow) {
+    setpopupShow(false);
+    Swal.fire({
+      title: "Advanced Payment Calculator",
+      text: 'Enter family members in the "Name" column, and the amount of days they were there in the "Days" column. Enter the amount that the family/group spend for the group in the "Family Paid" box. Then press calculate!',
+      // This app is intended to be used as a platform to calculate "who pays who what". This app was inspired by watching family members struggle to calculate the amount of $ owed after family vacations.
+      showClass: {
+        popup: "animate__animated animate__fadeInDown",
+      },
+      hideClass: {
+        popup: "animate__animated animate__fadeOutUp",
+      },
+    });
+  }
 
   const calculate = () => {
     setLoading(true);
@@ -63,12 +79,12 @@ export default function Home() {
           );
         })}
       </div>
-      <div className={[styles.holder, styles.buttons]}>
+      <div className={styles.buttons}>
         <button onClick={() => addEntry()}>Add Group</button>
         <button onClick={() => removeEntry()}>Remove Group</button>
-        {isLoading ? "loading" : data.name}
+        <button onClick={() => calculate()}>Calculate</button>
       </div>
-      <button onClick={() => calculate()}>Calculate</button>
+
       <div>
         {data.length == 0
           ? ""
@@ -78,6 +94,16 @@ export default function Home() {
                 ${dat[2]}
               </p>
             ))}
+      </div>
+      <div className={styles.aboutMe}>
+        by{" "}
+        <a
+          href="https://alexisballo.com"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Alexis Ballo
+        </a>
       </div>
     </div>
   );

@@ -1,7 +1,11 @@
 .valueInput {
+  border: 2px solid #9cafb7;
+  border-radius: 5px;
   margin: 3px;
 }
 
 .dayInput {
   margin: 3px;
+  border-radius: 5px;
+  border: 2px solid #9cafb7;
 }

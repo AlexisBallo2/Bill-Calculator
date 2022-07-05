@@ -1,22 +1,41 @@
 .holder {
-  display: inline-block;
+  /* display: flex; */
 }
 
 .buttons {
-  width: 40px;
-  background-color: red;
+  display: flex;
+  /* width: 50%; */
+  justify-content: center;
+}
+
+.buttons button {
+  background-color: white;
+  border: 2px solid #9cafb7;
+  border-radius: 10px;
+  border: none;
+  color: black;
+  padding: 15px 32px;
+  margin: 10px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
 }
 
 .paymentCalcHeader {
-  font-size: 30px;
+  font-size: 20px;
   width: 100vw;
-  padding-left: 40%;
-  padding-top: 30px;
-  padding-bottom: 30px;
-  background-color: lightblue;
-  border: 1px solid black;
-  box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
+  padding-top: 25px;
+  padding-bottom: 25px;
+  background-color: #f6ca83;
+  /* padding-left: auto;
+  padding-right: auto; */
+  border: 3px 0px 3px 0px solid black;
+
+  /* box-shadow: #d0d38f 0px 6px 12px -2px, #d0d38f 0px 3px 7px -3px; */
   color: black;
+
+  text-align: center;
 }
 
 .groupHolder {
@@ -32,4 +51,9 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
+}
+
+.aboutMe {
+  position: absolute;
+  bottom: 5px;
 }

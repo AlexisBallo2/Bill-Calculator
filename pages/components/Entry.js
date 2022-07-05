@@ -27,9 +27,9 @@ export default function Entry(props) {
         className={styles.valueInput}
       ></input>
       <input
+        className={styles.dayInput}
         value={day}
         onChange={handleDayChange}
-        className={styles.dayInput}
       ></input>
     </div>
   );
