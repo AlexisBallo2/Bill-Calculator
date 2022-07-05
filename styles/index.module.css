@@ -1,8 +1,35 @@
 .holder {
-    display: inline-block
+  display: inline-block;
 }
 
 .buttons {
-    width: 40px;
-    background-color: red;
+  width: 40px;
+  background-color: red;
+}
+
+.paymentCalcHeader {
+  font-size: 30px;
+  width: 100vw;
+  padding-left: 40%;
+  padding-top: 30px;
+  padding-bottom: 30px;
+  background-color: lightblue;
+  border: 1px solid black;
+  box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
+  color: black;
+}
+
+.groupHolder {
+  margin: 30px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  /* background-color: black; */
+}
+
+.page {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
