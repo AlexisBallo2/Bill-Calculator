@@ -167,7 +167,7 @@ function makeCalculation(days, money) {
   print('\n\n\n\n\n')
   print("final nenegup" , newnegup)
   print("final postup" , newpostup)
-
+   
   console.log("positives", positives)
   console.log("negatives", negatives)
 
