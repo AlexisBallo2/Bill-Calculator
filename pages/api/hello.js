@@ -173,7 +173,7 @@ function makeCalculation(days, money) {
 
   */
 }
-
+//prev
 //Origional code here
 /*
 list_of_people = {
