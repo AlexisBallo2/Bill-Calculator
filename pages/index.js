@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import Group from "./components/Group";
 import styles from "../styles/index.module.css";
 import Swal from "sweetalert2";
+import Image from "next/image";
 
 var groupsCounter = 3;
 
@@ -104,6 +105,14 @@ export default function Home() {
         >
           Alexis Ballo
         </a>
+      </div>
+      <div className={styles.question}>
+        <img
+          className={styles.image}
+          src="https://static.vecteezy.com/system/resources/previews/006/253/524/original/outline-question-mark-icon-free-vector.jpg"
+          width="30px"
+          height="30px"
+        />
       </div>
     </div>
   );
