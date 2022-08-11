@@ -10,7 +10,7 @@ export default function Home() {
 
   
   const [data, setData] = useState([]);
-  const [costData, setCostData] = useState([10,100]);
+  const [costData, setCostData] = useState([]);
   const [isLoading, setLoading] = useState(false);
   const [groupName, setGroupName] = useState("group1")
   const [fullData, setfullData] = useState([
@@ -37,7 +37,7 @@ export default function Home() {
 ]);
   const [popupShow, setpopupShow] = useState(true);
   var [inc, setInc] = useState(2)
-  var [groups, setGroups] = useState([{ id: 0 }, { id: 1 }]);
+  const [groups, setGroups] = useState([{ id: 0 }, { id: 1 }]);
 
  useEffect(() => {
     console.log("data from state", fullData)
@@ -53,9 +53,17 @@ export default function Home() {
         if(data.todos.length == 0) {
            
         } else {
-        let partial = JSON.parse(data.todos[0].dataArray);
-        console.log("data",(partial))
-        setfullData(partial)
+        let returnedData = JSON.parse(data.todos[0].dataArray);
+        var defCost = data.todos[0].costArray.toString().slice(1,-1).split(",")
+        console.log("default cost: ", data.todos[0].costArray.toString().slice(1,-1).split(","))
+        for(var i = 0; i< defCost.length;i++ ){
+          defCost[i] = parseInt(defCost[i])
+        }
+        let returnedCost = JSON.parse(data.todos[0].costArray);
+        console.log("data",(returnedData))
+        console.log("cost data", defCost)
+        setfullData(returnedData);
+        setCostData(defCost);
        
         }
       });
@@ -81,7 +89,7 @@ export default function Home() {
   }
 
   const calculate = () => {
-    console.log("full data: ", fullData)
+    console.log("full data: ", fullData, " and ", costData)
     setLoading(true);
     fetch("/api/hello", {
       method: "POST",
@@ -92,7 +100,7 @@ export default function Home() {
     })
       .then((res) => res.json())
       .then((data) => {
-        console.log(data);
+        console.log("returned calculated dat, ", data);
         setData(data);
         setLoading(false);
       });
@@ -112,10 +120,27 @@ export default function Home() {
     })
   }
 
-  const addEntry = (obj) => {
-    setGroups((current) => [...current, { id: current.length }]);
+  const addGroup = (obj) => {
+    console.log("groups type before update: ", (groups))
+    var tempGroup = { id: groups.length }
+    var tempGroupsArray = groups
+    // tempGroupsArray.push(tempGroup)
+    //setGroups(tempGroupsArray);
+    setGroups((current) => [...current, tempGroup]);
+    
+    console.log("did we add a new group: groupsList: ", groups)
+    var newGroupToAdd = [{"name":"","days":""}, {"name":"","days":""}];
+    // fullData.push(newGroupToAdd)
+    //setfullData(fullData)
+    setfullData(current => [...current, newGroupToAdd])
+    var tempCostData = costData;
+    // tempCostData.push(0)
+    // setCostData(tempCostData)
+    setCostData(current => [...current, 0])
+    console.log("adding a new group to fullData: fulldata: ", fullData, "data info: ", fullData[groups.length-1])
   };
-  const removeEntry = () => {
+  const removeGroup = () => {
+    console.log("are we here")
     setGroups((current) =>
       current.filter((obj) => {
         return obj.id !== current.length - 1;
@@ -147,8 +172,8 @@ export default function Home() {
         })}
       </div>
       <div className={styles.buttons}>
-        <button onClick={() => addEntry()}>Add Group</button>
-        <button onClick={() => removeEntry()}>Remove Group</button>
+        <button onClick={() => addGroup()}>Add Group</button>
+        <button onClick={() => removeGroup()}>Remove Group</button>
         <button onClick={() => calculate()}>Calculate</button>
         <button onClick={() => updateDB()}>Save</button>
       </div>

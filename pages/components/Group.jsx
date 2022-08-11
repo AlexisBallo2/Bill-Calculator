@@ -5,10 +5,13 @@ import styles from "../../styles/Group.module.css";
 var itemCounter = 3;
 
 export default function Group(props) {
-  console.log("getting data: ", props.data, " with length: ", props.data.length)
+ // console.log("getting data: ", props.data, " with length: ", props.data.length)
   var [items, setItems] = useState([]);
+    var [cost, setCost] = useState(0);
   useEffect(() => {
     var currentItems = [];
+    console.log("recieved payment, ", props.payment)
+    setCost(props.payment)
     console.log("updating items: ", items, " length: ", props.data.length )
     for(var i = 0; i < props.data.length; i++) {
       var tempObj = {id: i}
@@ -24,7 +27,6 @@ export default function Group(props) {
   
 
   var [content, setContent] = useState(props.data);
-  var [cost, setCost] = useState(props.payment);
 
   //add person to group
   const addEntry = (obj) => {
@@ -53,11 +55,21 @@ export default function Group(props) {
   };
 
   const setCostChange = (e) => {
-    setCost(e.target.value);
+    var value = e.target.value
+    console.log("cost change" , value)
+    if(e.target.value == "") {
+      console.log("nada")
+      //setCost("0")
+      setCost(e.target.value);
+    } else {
+      setCost(e.target.value);
+      console.log("cost")
+
+    }
     props.updaterFunction({
       number: props.id,
       value: content,
-      cost: e.target.value,
+      cost: parseInt(e.target.value),
     });
   };
   return (
