@@ -1,9 +1,19 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styles from "../../styles/Entry.module.css";
 
 export default function Entry(props) {
   const [value, setValue] = useState("");
   const [day, setDay] = useState("");
+  //console.log("in entry with: ", props.data)
+  useEffect(() => {
+    //console.log((props.data))
+    if((props.data) != undefined) {
+        setValue(props.data.name)
+        setDay(props.data.days)
+    }
+
+  }, [])
+  
   var number = props.number;
   const handleChange = (e) => {
     setValue(e.target.value);

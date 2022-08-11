@@ -7,12 +7,63 @@ import Image from "next/image";
 var groupsCounter = 3;
 
 export default function Home() {
+
+  
   const [data, setData] = useState([]);
-  const [costData, setCostData] = useState([]);
+  const [costData, setCostData] = useState([10,100]);
   const [isLoading, setLoading] = useState(false);
-  const [fullData, setfullData] = useState([]);
+  const [groupName, setGroupName] = useState("group1")
+  const [fullData, setfullData] = useState([
+    [
+        {
+            "name": "alexis",
+            "days": "10"
+        },
+        {
+            "name": "alexis",
+            "days": "10"
+        }
+    ],
+    [
+        {
+            "name": "jo",
+            "days": "1"
+        },
+        {
+            "name": "alexis",
+            "days": "10"
+        }
+    ]
+]);
   const [popupShow, setpopupShow] = useState(true);
+  var [inc, setInc] = useState(2)
   var [groups, setGroups] = useState([{ id: 0 }, { id: 1 }]);
+
+ useEffect(() => {
+    console.log("data from state", fullData)
+    fetch("/api/getDBData", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      }
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data.todos);
+        if(data.todos.length == 0) {
+           
+        } else {
+        let partial = JSON.parse(data.todos[0].dataArray);
+        console.log("data",(partial))
+        setfullData(partial)
+       
+        }
+      });
+  
+    return () => {
+    
+    }
+  }, [])
 
   if (popupShow) {
     setpopupShow(false);
@@ -30,6 +81,7 @@ export default function Home() {
   }
 
   const calculate = () => {
+    console.log("full data: ", fullData)
     setLoading(true);
     fetch("/api/hello", {
       method: "POST",
@@ -45,6 +97,20 @@ export default function Home() {
         setLoading(false);
       });
   };
+
+  const updateDB = () => {
+    console.log("states data", fullData)
+    fetch("/api/setDBData", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: (JSON.stringify({
+        dataArray: JSON.stringify(fullData),
+        costData: JSON.stringify(costData),
+      }))
+    })
+  }
 
   const addEntry = (obj) => {
     setGroups((current) => [...current, { id: current.length }]);
@@ -75,7 +141,7 @@ export default function Home() {
         {groups.map((item) => {
           return (
             <div key={item.id} className={styles.holder}>
-              <Group id={item.id} updaterFunction={updaterFunction} />
+              <Group id={item.id} updaterFunction={updaterFunction} data = {fullData[item.id]} payment = {costData[item.id]}/>
             </div>
           );
         })}
@@ -84,6 +150,7 @@ export default function Home() {
         <button onClick={() => addEntry()}>Add Group</button>
         <button onClick={() => removeEntry()}>Remove Group</button>
         <button onClick={() => calculate()}>Calculate</button>
+        <button onClick={() => updateDB()}>Save</button>
       </div>
 
       <div>

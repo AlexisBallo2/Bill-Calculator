@@ -5,9 +5,26 @@ import styles from "../../styles/Group.module.css";
 var itemCounter = 3;
 
 export default function Group(props) {
-  var [items, setItems] = useState([{ id: 0 }, { id: 1 }]);
-  var [content, setContent] = useState([]);
-  var [cost, setCost] = useState(0);
+  console.log("getting data: ", props.data, " with length: ", props.data.length)
+  var [items, setItems] = useState([]);
+  useEffect(() => {
+    var currentItems = [];
+    console.log("updating items: ", items, " length: ", props.data.length )
+    for(var i = 0; i < props.data.length; i++) {
+      var tempObj = {id: i}
+      currentItems.push(tempObj)
+    }
+    setItems(currentItems);
+    console.log("new items: ", items)
+  
+    return () => {
+      
+    }
+  }, [props.data.length])
+  
+
+  var [content, setContent] = useState(props.data);
+  var [cost, setCost] = useState(props.payment);
 
   //add person to group
   const addEntry = (obj) => {
@@ -26,7 +43,7 @@ export default function Group(props) {
   };
 
   //update current groups people
-  const updaterFunction = (data) => {
+  const groupsUpdaterFunction = (data) => {
     var currentData = content;
     currentData[data.number] = data.value;
     setContent(currentData);
@@ -54,7 +71,7 @@ export default function Group(props) {
           return (
             <div key={item.id}>
               <div>
-                <Entry updater={updaterFunction} number={item.id} />
+                <Entry updater={groupsUpdaterFunction} number={item.id} data = {props.data[item.id]} />
               </div>
             </div>
           );
