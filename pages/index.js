@@ -59,6 +59,12 @@ export default function Home() {
         for(var i = 0; i< defCost.length;i++ ){
           defCost[i] = parseInt(defCost[i])
         }
+        var tempGroupObj = []
+        for(var i = 0; i<returnedData.length; i++) {
+          var tempObj = {"id": i};
+          tempGroupObj.push(tempObj);
+        }
+        setGroups(tempGroupObj)
         let returnedCost = JSON.parse(data.todos[0].costArray);
         console.log("data",(returnedData))
         console.log("cost data", defCost)
@@ -108,6 +114,7 @@ export default function Home() {
 
   const updateDB = () => {
     console.log("states data", fullData)
+    console.log("states data", costData)
     fetch("/api/setDBData", {
       method: "POST",
       headers: {
@@ -115,7 +122,7 @@ export default function Home() {
       },
       body: (JSON.stringify({
         dataArray: JSON.stringify(fullData),
-        costData: JSON.stringify(costData),
+        costArray: JSON.stringify(costData),
       }))
     })
   }
@@ -139,13 +146,22 @@ export default function Home() {
     setCostData(current => [...current, 0])
     console.log("adding a new group to fullData: fulldata: ", fullData, "data info: ", fullData[groups.length-1])
   };
+  
   const removeGroup = () => {
     console.log("are we here")
-    setGroups((current) =>
-      current.filter((obj) => {
-        return obj.id !== current.length - 1;
-      })
-    );
+    
+    var tempGroupsArray = groups;
+    tempGroupsArray.pop();
+    setGroups(tempGroupsArray);
+
+    var tempCostArray = costData;
+    tempCostArray.pop();
+    setCostData(tempCostArray)
+
+    var tempDataArray = fullData;
+    fullData.pop();
+    setfullData(tempDataArray);
+    console.log("removed. New fulldata array and cost array:", fullData, costData )
   };
 
   const updaterFunction = (data) => {

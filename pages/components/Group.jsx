@@ -12,13 +12,13 @@ export default function Group(props) {
     var currentItems = [];
     console.log("recieved payment, ", props.payment)
     setCost(props.payment)
-    console.log("updating items: ", items, " length: ", props.data.length )
+    console.log("current group and length: ", items, items.length )
     for(var i = 0; i < props.data.length; i++) {
       var tempObj = {id: i}
       currentItems.push(tempObj)
     }
     setItems(currentItems);
-    console.log("new items: ", items)
+    console.log("new items and length: ", items, items.length)
   
     return () => {
       
