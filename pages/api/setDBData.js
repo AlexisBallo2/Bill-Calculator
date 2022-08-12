@@ -8,13 +8,13 @@ export default async function handler(req, res) {
       req.body.costArray,
       req.body.groupName
     );
-    knex("dataTable2")
+    knex("dataTable")
       .select()
       .where("groupName", req.body.groupName)
       .then(async function (rows) {
         if (rows.length === 0) {
           // no matching records found
-          knex("dataTable2")
+          knex("dataTable")
             .insert({
               groupName: req.body.groupName,
               dataArray: req.body.dataArray,
@@ -24,7 +24,7 @@ export default async function handler(req, res) {
               console.log("made new row", result);
             });
         } else {
-          const todos1 = await knex("dataTable2")
+          const todos1 = await knex("dataTable")
             .update({
               dataArray: req.body.dataArray,
               costArray: req.body.costArray,
@@ -34,7 +34,7 @@ export default async function handler(req, res) {
         }
       });
 
-    const todos = await knex("dataTable2").where({
+    const todos = await knex("dataTable").where({
       groupName: req.body.groupName,
     }); // making a query to get all todos
     //console.log("todos: ", todos);
