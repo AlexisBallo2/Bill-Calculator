@@ -7,84 +7,81 @@ import Image from "next/image";
 var groupsCounter = 3;
 
 export default function Home() {
-
-  
   const [data, setData] = useState([]);
   const [costData, setCostData] = useState([]);
   const [isLoading, setLoading] = useState(false);
-  const [groupName, setGroupName] = useState("group1")
+  const [groupName, setGroupName] = useState("");
+  const [popupShow, setpopupShow] = useState(true);
+  var [inc, setInc] = useState(2);
+  const [groups, setGroups] = useState([{ id: 0 }]);
   const [fullData, setfullData] = useState([
     [
-        {
-            "name": "alexis",
-            "days": "10"
-        },
-        {
-            "name": "alexis",
-            "days": "10"
-        }
+      {
+        name: "alexis",
+        days: "10",
+      },
     ],
-    [
-        {
-            "name": "jo",
-            "days": "1"
-        },
-        {
-            "name": "alexis",
-            "days": "10"
-        }
-    ]
-]);
-  const [popupShow, setpopupShow] = useState(true);
-  var [inc, setInc] = useState(2)
-  const [groups, setGroups] = useState([{ id: 0 }, { id: 1 }]);
+  ]);
 
- useEffect(() => {
-    console.log("data from state", fullData)
+  useEffect(() => {
+    console.log("data from state", fullData);
     fetch("/api/getDBData", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-      }
+      },
+      body: JSON.stringify({
+        groupName: groupName,
+      }),
     })
       .then((res) => res.json())
       .then((data) => {
         console.log(data.todos);
-        if(data.todos.length == 0) {
-           
+        if (data.todos.length == 0) {
         } else {
-        let returnedData = JSON.parse(data.todos[0].dataArray);
-        var defCost = data.todos[0].costArray.toString().slice(1,-1).split(",")
-        console.log("default cost: ", data.todos[0].costArray.toString().slice(1,-1).split(","))
-        for(var i = 0; i< defCost.length;i++ ){
-          defCost[i] = parseInt(defCost[i])
-        }
-        var tempGroupObj = []
-        for(var i = 0; i<returnedData.length; i++) {
-          var tempObj = {"id": i};
-          tempGroupObj.push(tempObj);
-        }
-        setGroups(tempGroupObj)
-        let returnedCost = JSON.parse(data.todos[0].costArray);
-        console.log("data",(returnedData))
-        console.log("cost data", defCost)
-        setfullData(returnedData);
-        setCostData(defCost);
-       
+          let returnedData = JSON.parse(data.todos[0].dataArray);
+          var defCost = data.todos[0].costArray
+            .toString()
+            .slice(1, -1)
+            .split(",");
+          console.log(
+            "default cost: ",
+            data.todos[0].costArray.toString().slice(1, -1).split(",")
+          );
+          for (var i = 0; i < defCost.length; i++) {
+            defCost[i] = parseInt(defCost[i]);
+          }
+          var tempGroupObj = [];
+          for (var i = 0; i < returnedData.length; i++) {
+            var tempObj = { id: i };
+            tempGroupObj.push(tempObj);
+          }
+          setGroups(tempGroupObj);
+          let returnedCost = JSON.parse(data.todos[0].costArray);
+          console.log("data", returnedData);
+          console.log("cost data", defCost);
+          setfullData(returnedData);
+          setCostData(defCost);
         }
       });
-  
-    return () => {
-    
-    }
-  }, [])
+
+    return () => {};
+  }, [groupName]);
 
   if (popupShow) {
     setpopupShow(false);
-    Swal.fire({
+    const { value: recieveedstuff } = Swal.fire({
       title: "Advanced Payment Calculator",
       text: 'Enter family members in the "Name" column, and the amount of days they were there in the "Days" column. Enter the amount that the family/group spend for the group in the "Family Paid" box. Then press calculate!',
       // This app is intended to be used as a platform to calculate "who pays who what". This app was inspired by watching family members struggle to calculate the amount of $ owed after family vacations.
+      input: "text",
+      showCancelButton: true,
+      inputValue: "",
+      inputValidator: (value) => {
+        console.log(value);
+        setGroupName(value);
+        return;
+      },
       showClass: {
         popup: "animate__animated animate__fadeInDown",
       },
@@ -95,7 +92,7 @@ export default function Home() {
   }
 
   const calculate = () => {
-    console.log("full data: ", fullData, " and ", costData)
+    console.log("full data: ", fullData, " and ", costData);
     setLoading(true);
     fetch("/api/hello", {
       method: "POST",
@@ -113,55 +110,68 @@ export default function Home() {
   };
 
   const updateDB = () => {
-    console.log("states data", fullData)
-    console.log("states data", costData)
+    console.log("states data", fullData);
+    console.log("states data", costData);
     fetch("/api/setDBData", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: (JSON.stringify({
+      body: JSON.stringify({
         dataArray: JSON.stringify(fullData),
         costArray: JSON.stringify(costData),
-      }))
-    })
-  }
+        groupName: groupName,
+      }),
+    });
+  };
 
   const addGroup = (obj) => {
-    console.log("groups type before update: ", (groups))
-    var tempGroup = { id: groups.length }
-    var tempGroupsArray = groups
+    console.log("groups type before update: ", groups);
+    var tempGroup = { id: groups.length };
+    var tempGroupsArray = groups;
     // tempGroupsArray.push(tempGroup)
     //setGroups(tempGroupsArray);
     setGroups((current) => [...current, tempGroup]);
-    
-    console.log("did we add a new group: groupsList: ", groups)
-    var newGroupToAdd = [{"name":"","days":""}, {"name":"","days":""}];
+
+    console.log("did we add a new group: groupsList: ", groups);
+    var newGroupToAdd = [
+      { name: "", days: "" },
+      { name: "", days: "" },
+    ];
     // fullData.push(newGroupToAdd)
     //setfullData(fullData)
-    setfullData(current => [...current, newGroupToAdd])
+    setfullData((current) => [...current, newGroupToAdd]);
     var tempCostData = costData;
     // tempCostData.push(0)
     // setCostData(tempCostData)
-    setCostData(current => [...current, 0])
-    console.log("adding a new group to fullData: fulldata: ", fullData, "data info: ", fullData[groups.length-1])
+    setCostData((current) => [...current, 0]);
+    console.log(
+      "adding a new group to fullData: fulldata: ",
+      fullData,
+      "data info: ",
+      fullData[groups.length - 1]
+    );
   };
-  
+
   const removeGroup = () => {
-    console.log("are we here")
-    
+    console.log("are we here");
+
     var tempGroupsArray = groups;
     tempGroupsArray.pop();
     setGroups(tempGroupsArray);
 
     var tempCostArray = costData;
     tempCostArray.pop();
-    setCostData(tempCostArray)
+    setCostData(tempCostArray);
 
     var tempDataArray = fullData;
     fullData.pop();
     setfullData(tempDataArray);
-    console.log("removed. New fulldata array and cost array:", fullData, costData )
+    console.log(
+      "removed. New fulldata array and cost array:",
+      fullData,
+      costData
+    );
   };
 
   const updaterFunction = (data) => {
@@ -178,11 +188,17 @@ export default function Home() {
   return (
     <div className={styles.page}>
       <div className={styles.paymentCalcHeader}>Payment Calculator</div>
+      <div></div>
       <div className={styles.groupHolder}>
         {groups.map((item) => {
           return (
             <div key={item.id} className={styles.holder}>
-              <Group id={item.id} updaterFunction={updaterFunction} data = {fullData[item.id]} payment = {costData[item.id]}/>
+              <Group
+                id={item.id}
+                updaterFunction={updaterFunction}
+                data={fullData[item.id]}
+                payment={costData[item.id]}
+              />
             </div>
           );
         })}
