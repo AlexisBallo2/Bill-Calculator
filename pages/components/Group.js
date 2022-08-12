@@ -5,26 +5,24 @@ import styles from "../../styles/Group.module.css";
 var itemCounter = 3;
 
 export default function Group(props) {
- // console.log("getting data: ", props.data, " with length: ", props.data.length)
+  var propsData = props;
+  // console.log("getting data: ", props.data, " with length: ", props.data.length)
   var [items, setItems] = useState([]);
-    var [cost, setCost] = useState(0);
+  var [cost, setCost] = useState(0);
   useEffect(() => {
     var currentItems = [];
-    console.log("recieved payment, ", props.payment)
-    setCost(props.payment)
-    console.log("current group and length: ", items, items.length )
-    for(var i = 0; i < props.data.length; i++) {
-      var tempObj = {id: i}
-      currentItems.push(tempObj)
+    console.log("recieved payment, ", props.payment);
+    setCost(props.payment);
+    console.log("current group and length: ", items, items.length);
+    for (var i = 0; i < props.data.length; i++) {
+      var tempObj = { id: i };
+      currentItems.push(tempObj);
     }
     setItems(currentItems);
-    console.log("new items and length: ", items, items.length)
-  
-    return () => {
-      
-    }
-  }, [props.data.length])
-  
+    console.log("new items and length: ", items, items.length);
+
+    return () => {};
+  }, [props.data]);
 
   var [content, setContent] = useState(props.data);
 
@@ -55,16 +53,15 @@ export default function Group(props) {
   };
 
   const setCostChange = (e) => {
-    var value = e.target.value
-    console.log("cost change" , value)
-    if(e.target.value == "") {
-      console.log("nada")
+    var value = e.target.value;
+    console.log("cost change", value);
+    if (e.target.value == "") {
+      console.log("nada");
       //setCost("0")
       setCost(e.target.value);
     } else {
       setCost(e.target.value);
-      console.log("cost")
-
+      console.log("cost");
     }
     props.updaterFunction({
       number: props.id,
@@ -83,7 +80,11 @@ export default function Group(props) {
           return (
             <div key={item.id}>
               <div>
-                <Entry updater={groupsUpdaterFunction} number={item.id} data = {props.data[item.id]} />
+                <Entry
+                  updater={groupsUpdaterFunction}
+                  number={item.id}
+                  data={props.data[item.id]}
+                />
               </div>
             </div>
           );
