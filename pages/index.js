@@ -72,7 +72,7 @@ export default function Home() {
     setpopupShow(false);
     const { value: recieveedstuff } = Swal.fire({
       title: "Advanced Payment Calculator",
-      text: 'Enter family members in the "Name" column, and the amount of days they were there in the "Days" column. Enter the amount that the family/group spend for the group in the "Family Paid" box. Then press calculate!',
+      html: 'Enter family members in the "Name" column, and the amount of days they were there in the "Days" column. Enter the amount that the family/group spend for the group in the "Family Paid" box. Then press calculate! </br> </br> If you have a groupname/want a groupname, please enter it below!',
       // This app is intended to be used as a platform to calculate "who pays who what". This app was inspired by watching family members struggle to calculate the amount of $ owed after family vacations.
       input: "text",
       showCancelButton: true,
