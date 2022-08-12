@@ -5,13 +5,14 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
+    "export": "next export",
     "lint": "next lint"
   },
   "dependencies": {
     "better-sqlite3": "^7.6.2",
     "dotenv": "^16.0.1",
     "knex": "^2.2.0",
-    "next": "12.2.0",
+    "next": "^12.2.0",
     "pg": "^8.7.3",
     "react": "18.2.0",
     "react-dom": "18.2.0",
