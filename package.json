@@ -12,10 +12,15 @@
     "better-sqlite3": "^7.6.2",
     "dotenv": "^16.0.1",
     "knex": "^2.2.0",
+    "mssql": "^9.0.0",
+    "mysql": "^2.18.1",
     "next": "^12.2.0",
+    "oracle": "^0.4.1",
     "pg": "^8.7.3",
+    "pg-query-stream": "^4.2.3",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "sqlite3": "^5.0.11",
     "sweetalert2": "^11.4.20"
   },
   "devDependencies": {
