@@ -6,6 +6,8 @@
   display: flex;
   /* width: 50%; */
   justify-content: center;
+  margin-bottom: 40px;
+  flex-wrap: wrap;
 }
 
 .buttons button {
@@ -54,7 +56,7 @@
 }
 
 .aboutMe {
-  position: absolute;
+  position: fixed;
   bottom: 5px;
 }
 

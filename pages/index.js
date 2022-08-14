@@ -8,17 +8,18 @@ var groupsCounter = 3;
 
 export default function Home() {
   const [data, setData] = useState([]);
-  const [costData, setCostData] = useState([]);
   const [isLoading, setLoading] = useState(false);
   const [groupName, setGroupName] = useState("");
+  const [whoPaidArray, setWhoPaidArray] = useState([]);
   const [popupShow, setpopupShow] = useState(true);
   var [inc, setInc] = useState(2);
   const [groups, setGroups] = useState([{ id: 0 }]);
+  const [text, setText] = useState("ajda");
   const [fullData, setfullData] = useState([
     [
       {
         name: "alexis",
-        days: "10",
+        indivCost: "10",
       },
     ],
   ]);
@@ -39,29 +40,30 @@ export default function Home() {
         console.log(data.todos);
         if (data.todos.length == 0) {
         } else {
+          console.log("data recieved from api", data);
           let returnedData = JSON.parse(data.todos[0].dataArray);
-          var defCost = data.todos[0].costArray
-            .toString()
-            .slice(1, -1)
-            .split(",");
-          console.log(
-            "default cost: ",
-            data.todos[0].costArray.toString().slice(1, -1).split(",")
-          );
-          for (var i = 0; i < defCost.length; i++) {
-            defCost[i] = parseInt(defCost[i]);
+          //var defCost = ["alexis", "johna"]
+          var defCost = data.todos[0].costArray.slice(1, -1);
+          var newdefCost = defCost.split(",");
+          for (var i = 0; i < newdefCost.length; i++) {
+            newdefCost[i] = newdefCost[i].slice(1, -1);
+            // console.log(newdefCost[i])
           }
+          console.log("parsed defCost", newdefCost);
+          //   .toString()
+          //   .slice(1, -1)
+          //   .split(",");
+          setWhoPaidArray(newdefCost);
+
           var tempGroupObj = [];
           for (var i = 0; i < returnedData.length; i++) {
             var tempObj = { id: i };
             tempGroupObj.push(tempObj);
           }
           setGroups(tempGroupObj);
-          let returnedCost = JSON.parse(data.todos[0].costArray);
+          console.log("who paid", whoPaidArray);
           console.log("data", returnedData);
-          console.log("cost data", defCost);
           setfullData(returnedData);
-          setCostData(defCost);
         }
       });
 
@@ -71,8 +73,8 @@ export default function Home() {
   if (popupShow) {
     setpopupShow(false);
     const { value: recieveedstuff } = Swal.fire({
-      title: "Advanced Payment Calculator",
-      html: 'Enter family members in the "Name" column, and the amount of days they were there in the "Days" column. Enter the amount that the family/group spend for the group in the "Family Paid" box. Then press calculate! </br> </br> If you have a groupname/want a groupname, please enter it below!',
+      title: "Advanced Bill Calculator",
+      html: "Enter the different bills! </br> </br> If you have a code enter it below! If you dont, create a new code!",
       // This app is intended to be used as a platform to calculate "who pays who what". This app was inspired by watching family members struggle to calculate the amount of $ owed after family vacations.
       input: "text",
       showCancelButton: true,
@@ -92,26 +94,33 @@ export default function Home() {
   }
 
   const calculate = () => {
-    console.log("full data: ", fullData, " and ", costData);
+    console.log("full data: ", fullData);
     setLoading(true);
-    fetch("/api/hello", {
+    fetch("/api/calculate", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ days: fullData, costs: costData }),
+      body: JSON.stringify({ data: fullData, whoPaidData: whoPaidArray }),
     })
       .then((res) => res.json())
       .then((data) => {
         console.log("returned calculated dat, ", data);
         setData(data);
         setLoading(false);
+        setText("alexis \n Joe");
+        for (var i = 0; i < data.length; i++) {
+          data[i] = data[i][0] + " pays " + data[i][1] + ": $" + data[i][2];
+        }
+        Swal.fire({
+          title: "Performed Calculation",
+          html: data.join("</br>"),
+        });
       });
   };
 
   const updateDB = () => {
     console.log("states data", fullData);
-    console.log("states data", costData);
     fetch("/api/setDBData", {
       method: "POST",
       headers: {
@@ -119,8 +128,8 @@ export default function Home() {
       },
       body: JSON.stringify({
         dataArray: JSON.stringify(fullData),
-        costArray: JSON.stringify(costData),
         groupName: groupName,
+        costArray: whoPaidArray,
       }),
     });
   };
@@ -135,16 +144,12 @@ export default function Home() {
 
     console.log("did we add a new group: groupsList: ", groups);
     var newGroupToAdd = [
-      { name: "", days: "" },
-      { name: "", days: "" },
+      { name: "", indivCost: "" },
+      { name: "", indivCost: "" },
     ];
     // fullData.push(newGroupToAdd)
     //setfullData(fullData)
     setfullData((current) => [...current, newGroupToAdd]);
-    var tempCostData = costData;
-    // tempCostData.push(0)
-    // setCostData(tempCostData)
-    setCostData((current) => [...current, 0]);
     console.log(
       "adding a new group to fullData: fulldata: ",
       fullData,
@@ -160,29 +165,23 @@ export default function Home() {
     tempGroupsArray.pop();
     setGroups(tempGroupsArray);
 
-    var tempCostArray = costData;
-    tempCostArray.pop();
-    setCostData(tempCostArray);
-
     var tempDataArray = fullData;
     fullData.pop();
     setfullData(tempDataArray);
-    console.log(
-      "removed. New fulldata array and cost array:",
-      fullData,
-      costData
-    );
+    console.log("removed. New fulldata array:", fullData);
   };
 
   const updaterFunction = (data) => {
     var currentData = fullData;
-    var currentCostData = costData;
-    currentCostData[data.number] = data.cost;
-    setCostData(currentCostData);
+
     fullData[data.number] = data.value;
     setfullData(currentData);
     console.log("full data", currentData);
-    console.log("costs", currentCostData);
+  };
+
+  const WhoPaidUpdaterFunction = (data) => {
+    whoPaidArray[data.number] = data.whoPaid;
+    console.log("updating whopaidarray: ", whoPaidArray);
   };
 
   return (
@@ -197,7 +196,8 @@ export default function Home() {
                 id={item.id}
                 updaterFunction={updaterFunction}
                 data={fullData[item.id]}
-                payment={costData[item.id]}
+                whoPaidArray={whoPaidArray}
+                WhoPaidUpdaterFunction={WhoPaidUpdaterFunction}
               />
             </div>
           );
@@ -210,16 +210,7 @@ export default function Home() {
         <button onClick={() => updateDB()}>Save</button>
       </div>
 
-      <div>
-        {data.length == 0
-          ? ""
-          : data.map((dat) => (
-              <p key={dat}>
-                Group {parseInt(dat[0]) + 1} pays Group {parseInt(dat[1]) + 1}:
-                ${dat[2]}
-              </p>
-            ))}
-      </div>
+      <div></div>
       <div className={styles.aboutMe}>
         by{" "}
         <a

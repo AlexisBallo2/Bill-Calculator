@@ -39,3 +39,13 @@
   padding-left: 5px;
   width: 30%;
 }
+
+.whoPaidHolder {
+  display: flex;
+  justify-content: center;
+  padding: 10px;
+}
+
+.whoPaidHolder span {
+  padding: 5px;
+}

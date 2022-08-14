@@ -8,17 +8,17 @@ export default function Group(props) {
   var propsData = props;
   // console.log("getting data: ", props.data, " with length: ", props.data.length)
   var [items, setItems] = useState([]);
-  var [cost, setCost] = useState(0);
+  var [whoPaid, setWhoPaid] = useState("");
   useEffect(() => {
     var currentItems = [];
     console.log("recieved payment, ", props.payment);
-    setCost(props.payment);
     console.log("current group and length: ", items, items.length);
     for (var i = 0; i < props.data.length; i++) {
       var tempObj = { id: i };
       currentItems.push(tempObj);
     }
     setItems(currentItems);
+    setWhoPaid(props.whoPaidArray[props.id]);
     console.log("new items and length: ", items, items.length);
 
     return () => {};
@@ -48,32 +48,25 @@ export default function Group(props) {
     currentData[data.number] = data.value;
     setContent(currentData);
     console.log("passing currentData", currentData);
-    props.updaterFunction({ number: props.id, value: currentData, cost: cost });
+    props.updaterFunction({
+      number: props.id,
+      value: currentData,
+      whoPaid: whoPaid,
+    });
     console.log("content dat", content);
   };
 
-  const setCostChange = (e) => {
-    var value = e.target.value;
-    console.log("cost change", value);
-    if (e.target.value == "") {
-      console.log("nada");
-      //setCost("0")
-      setCost(e.target.value);
-    } else {
-      setCost(e.target.value);
-      console.log("cost");
-    }
-    props.updaterFunction({
-      number: props.id,
-      value: content,
-      cost: parseInt(e.target.value),
-    });
+  const whoPaidUpdater = (e) => {
+    console.log("updating");
+    setWhoPaid(e.target.value);
+    props.WhoPaidUpdaterFunction({ number: props.id, whoPaid: e.target.value });
   };
+
   return (
     <div className={styles.group}>
-      <h1 className={styles.groupHeader}> Group {props.id + 1}</h1>
+      <h1 className={styles.groupHeader}> Bill {props.id + 1}</h1>
       <div className={styles.headers}>
-        <span>Name</span> <span>Days</span>
+        <span>Name</span> <span>$$</span>
       </div>
       <div>
         {items.map((item) => {
@@ -93,14 +86,12 @@ export default function Group(props) {
           <button onClick={() => addEntry()}>+</button>
           <button onClick={() => removeEntry()}>-</button>
         </div>
-        <div className={styles.costbuttonHolder}>
-          <span className={styles.costText}> Family Paid:</span>
-          <input
-            value={cost}
-            onChange={setCostChange}
-            className={styles.costInput}
-          ></input>
-        </div>
+      </div>
+      <div className={styles.whoPaidHolder}>
+        <span>Who Paid: </span>{" "}
+        <span>
+          <input value={whoPaid} onChange={whoPaidUpdater} />
+        </span>
       </div>
     </div>
   );

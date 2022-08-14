@@ -2,44 +2,44 @@ import React, { useState, useEffect } from "react";
 import styles from "../../styles/Entry.module.css";
 
 export default function Entry(props) {
-  const [value, setValue] = useState("");
-  const [day, setDay] = useState("");
+  const [name, setName] = useState("");
+  const [indivCost, setIndivCost] = useState("");
   //console.log("in entry with: ", props.data)
   useEffect(() => {
     //console.log((props.data))
     if((props.data) != undefined) {
-        setValue(props.data.name)
-        setDay(props.data.days)
+        setName(props.data.name)
+        setIndivCost(props.data.indivCost)
     }
 
   }, [])
   
   var number = props.number;
   const handleChange = (e) => {
-    setValue(e.target.value);
+    setName(e.target.value);
     props.updater({
       number: number,
-      value: { name: e.target.value, days: day },
+      value: { name: e.target.value, indivCost: indivCost },
     });
   };
-  const handleDayChange = (e) => {
-    setDay(e.target.value);
+  const handleIndivCostChange = (e) => {
+    setIndivCost(e.target.value);
     props.updater({
       number: number,
-      value: { name: value, days: e.target.value },
+      value: { name: name, indivCost: e.target.value },
     });
   };
   return (
     <div>
       <input
-        value={value}
+        value={name}
         onChange={handleChange}
         className={styles.valueInput}
       ></input>
       <input
         className={styles.dayInput}
-        value={day}
-        onChange={handleDayChange}
+        value={indivCost}
+        onChange={handleIndivCostChange}
       ></input>
     </div>
   );
